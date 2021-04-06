@@ -1,0 +1,10 @@
+#ifndef COMMON_H
+#define COMMON_H
+
+#define LOGIN_PAGE 0
+#define NAVIGATION_PAGE 1
+#define MODBUS_CLIENT_PAGE 2
+#define MODBUS_SERVER_PAGE 3
+#define XLSX_DEAL_PAGE 4
+
+#endif // COMMON_H

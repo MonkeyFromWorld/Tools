@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qss/login.qss</file>
+        <file>images/sea.jpg</file>
+        <file>images/moon.png</file>
+    </qresource>
+</RCC>
