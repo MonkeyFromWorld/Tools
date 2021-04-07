@@ -331,7 +331,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QLabel" name="discreteInputs">
+          <widget class="QLabel" name="Disc">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -339,7 +339,7 @@
             </size>
            </property>
            <property name="text">
-            <string>DI</string>
+            <string>Disc</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -772,6 +772,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -787,6 +790,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -804,6 +810,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -819,6 +828,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -836,6 +848,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -851,6 +866,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -868,6 +886,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -883,6 +904,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -900,6 +924,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -915,6 +942,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -1192,6 +1222,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -1207,6 +1240,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -1224,6 +1260,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -1239,6 +1278,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -1256,6 +1298,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -1271,6 +1316,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -1288,6 +1336,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -1303,6 +1354,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -1320,6 +1374,9 @@
              <height>20</height>
             </size>
            </property>
+           <property name="text">
+            <string>0</string>
+           </property>
            <property name="maxLength">
             <number>32767</number>
            </property>
@@ -1335,6 +1392,9 @@
              <width>0</width>
              <height>20</height>
             </size>
+           </property>
+           <property name="text">
+            <string>0</string>
            </property>
            <property name="maxLength">
             <number>32767</number>
@@ -1528,7 +1588,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Device">

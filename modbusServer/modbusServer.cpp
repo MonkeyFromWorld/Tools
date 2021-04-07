@@ -47,7 +47,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#include "common.h"
+
 #include "modbusServer.h"
 #include "serverSettingsdialog.h"
 #include "ui_modbusServer.h"
@@ -113,7 +113,6 @@ void ModbusServer::initActions()
     connect(ui->connectType, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ModbusServer::onCurrentConnectTypeChanged);
     connect(ui->actionOptions, &QAction::triggered, m_settingsDialog, &QDialog::show);
     connect(ui->actionNavigation, &QAction::triggered, this, &ModbusServer::on_actionNavigation_triggered);
-
 }
 
 void ModbusServer::on_actionNavigation_triggered()
@@ -124,28 +123,98 @@ void ModbusServer::on_actionNavigation_triggered()
 
 void ModbusServer::onCoilStartAddressChange(int startAddress)
 {
-    qDebug() << "CoilStartAddressChange:" << startAddress << endl;
+    //qDebug() << "CoilStartAddressChange:" << startAddress << endl;
     QString text;
+    quint16 numTemp;
+    quint16 value;
     for (int i = 0; i < 10; ++i)
     {
-        coilButtons.button(i)->setText(text.setNum(startAddress+i, 10));
-        //coilCheckBox.value(QStringLiteral("coils_%1").arg(i))->setText(text.setNum(startAddress+i, 16));
+        if (startAddress+i < REGISTER_QUANTITY) {
+            text.setNum(startAddress+i, 10);
+            numTemp = startAddress+i;
+        }
+        else {
+            text.setNum(startAddress+i-REGISTER_QUANTITY, 10);
+            numTemp = startAddress+i-REGISTER_QUANTITY;
+        }
+        modbusDevice->data(QModbusDataUnit::Coils, quint16(numTemp), &value);
+        coilButtons.button(i)->setText(text);
+        coilButtons.button(i)->setChecked(value);
     }
 }
 
 void ModbusServer::onDIStartAddressChange(int startAddress)
 {
-    qDebug() << "DIStartAddressChange:" << startAddress<< endl;
+    QString text;
+    quint16 numTemp;
+    quint16 value;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (startAddress+i < REGISTER_QUANTITY) {
+            text.setNum(startAddress+i, 10);
+            numTemp = startAddress+i;
+        }
+        else {
+            text.setNum(startAddress+i-REGISTER_QUANTITY, 10);
+            numTemp = startAddress+i-REGISTER_QUANTITY;
+        }
+
+        modbusDevice->data(QModbusDataUnit::DiscreteInputs, quint16(numTemp), &value);
+        discreteButtons.button(i)->setText(text);
+        discreteButtons.button(i)->setChecked(value);
+    }
+
+    //qDebug() << "DIStartAddressChange:" << startAddress<< endl;
 }
 
 void ModbusServer::onIRStartAddressChange(int startAddress)
 {
-    qDebug() << "IRStartAddressChange：" << startAddress<< endl;
+    //qDebug() << "IRStartAddressChange：" << startAddress<< endl;
+    QString text;
+    quint16 numTemp;
+    quint16 value;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (startAddress+i < REGISTER_QUANTITY)
+        {
+            text.setNum(startAddress+i, 10);
+            numTemp = startAddress+i;
+        }
+        else
+        {
+            text.setNum(startAddress+i-REGISTER_QUANTITY, 10);
+            numTemp = startAddress+i-REGISTER_QUANTITY;
+        }
+
+        modbusDevice->data(QModbusDataUnit::InputRegisters, quint16(numTemp), &value);
+        IR_addressShow[i]->setText(text);
+        registers.value(QStringLiteral("inReg_%1").arg(i))->setText(text.setNum(value, 10));
+    }
 }
 
 void ModbusServer::onHRStartAddressChange(int startAddress)
 {
-    qDebug() << "HRStartAddressChange：" << startAddress<< endl;
+    //qDebug() << "HRStartAddressChange：" << startAddress<< endl;
+    QString text;
+    quint16 numTemp;
+    quint16 value;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (startAddress+i < REGISTER_QUANTITY)
+        {
+            text.setNum(startAddress+i, 10);
+            numTemp = startAddress+i;
+        }
+        else
+        {
+            text.setNum(startAddress+i-REGISTER_QUANTITY, 10);
+            numTemp = startAddress+i-REGISTER_QUANTITY;
+        }
+
+        modbusDevice->data(QModbusDataUnit::HoldingRegisters, quint16(numTemp), &value);
+        HR_addressShow[i]->setText(text);
+        registers.value(QStringLiteral("holdReg_%1").arg(i))->setText(text.setNum(value, 10));
+    }
 }
 
 void ModbusServer::onCurrentConnectTypeChanged(int index)
@@ -176,10 +245,10 @@ void ModbusServer::onCurrentConnectTypeChanged(int index)
             statusBar()->showMessage(tr("Could not create Modbus server."), 5000);
     } else {
         QModbusDataUnitMap reg;
-        reg.insert(QModbusDataUnit::Coils, { QModbusDataUnit::Coils, 0, 10 });
-        reg.insert(QModbusDataUnit::DiscreteInputs, { QModbusDataUnit::DiscreteInputs, 0, 10 });
-        reg.insert(QModbusDataUnit::InputRegisters, { QModbusDataUnit::InputRegisters, 0, 10 });
-        reg.insert(QModbusDataUnit::HoldingRegisters, { QModbusDataUnit::HoldingRegisters, 0, 10 });
+        reg.insert(QModbusDataUnit::Coils, { QModbusDataUnit::Coils, 0, REGISTER_QUANTITY });
+        reg.insert(QModbusDataUnit::DiscreteInputs, { QModbusDataUnit::DiscreteInputs, 0, REGISTER_QUANTITY });
+        reg.insert(QModbusDataUnit::InputRegisters, { QModbusDataUnit::InputRegisters, 0, REGISTER_QUANTITY });
+        reg.insert(QModbusDataUnit::HoldingRegisters, { QModbusDataUnit::HoldingRegisters, 0, REGISTER_QUANTITY });
 
         modbusDevice->setMap(reg);
 
@@ -267,13 +336,15 @@ void ModbusServer::onStateChanged(int state)
 void ModbusServer::coilChanged(int id)
 {
     QAbstractButton *button = coilButtons.button(id);
-    bitChanged(id, QModbusDataUnit::Coils, button->isChecked());
+    quint16 i_register = coilButtons.button(id)->text().toUShort(); // 得到寄存器地址
+    bitChanged(i_register, QModbusDataUnit::Coils, button->isChecked());
 }
 
 void ModbusServer::discreteInputChanged(int id)
 {
     QAbstractButton *button = discreteButtons.button(id);
-    bitChanged(id, QModbusDataUnit::DiscreteInputs, button->isChecked());
+    quint16 i_register = discreteButtons.button(id)->text().toUShort(); // 得到寄存器地址
+    bitChanged(i_register, QModbusDataUnit::DiscreteInputs, button->isChecked());
 }
 
 void ModbusServer::bitChanged(int id, QModbusDataUnit::RegisterType table, bool value)
@@ -294,10 +365,18 @@ void ModbusServer::setRegister(const QString &value)
     if (registers.contains(objectName)) {
         bool ok = true;
         const quint16 id = quint16(QObject::sender()->property("ID").toUInt());
+        quint16 i_register; // id 对应的寄存器地址
+
         if (objectName.startsWith(QStringLiteral("inReg")))
-            ok = modbusDevice->setData(QModbusDataUnit::InputRegisters, id, value.toUShort(&ok, 16));
+        {
+            i_register = IR_addressShow[id]->text().toUShort();
+            ok = modbusDevice->setData(QModbusDataUnit::InputRegisters, i_register, value.toUShort(&ok, 10));
+        }
         else if (objectName.startsWith(QStringLiteral("holdReg")))
-            ok = modbusDevice->setData(QModbusDataUnit::HoldingRegisters, id, value.toUShort(&ok, 16));
+        {
+            i_register = HR_addressShow[id]->text().toUShort();
+            ok = modbusDevice->setData(QModbusDataUnit::HoldingRegisters, i_register, value.toUShort(&ok, 10));
+        }
 
         if (!ok)
             statusBar()->showMessage(tr("Could not set register: ") + modbusDevice->errorString(),
@@ -313,12 +392,21 @@ void ModbusServer::updateWidgets(QModbusDataUnit::RegisterType table, int addres
         switch (table) {
         case QModbusDataUnit::Coils:
             modbusDevice->data(QModbusDataUnit::Coils, quint16(address + i), &value);
-            coilButtons.button(address + i)->setChecked(value);
+            for (int j = 0; j < 10; ++j)
+            {
+                quint16 i_register = coilButtons.button(j)->text().toUShort();
+                if (i_register == address + i)
+                    coilButtons.button(j)->setChecked(value);
+            }
             break;
         case QModbusDataUnit::HoldingRegisters:
             modbusDevice->data(QModbusDataUnit::HoldingRegisters, quint16(address + i), &value);
-            registers.value(QStringLiteral("holdReg_%1").arg(address + i))->setText(text
-                .setNum(value, 16));
+            for (int j = 0; j < 10; ++j)
+            {
+                quint16 i_register = HR_addressShow[j]->text().toUShort();
+                if (i_register == address + i)
+                    registers.value(QStringLiteral("holdReg_%1").arg(j))->setText(text.setNum(value, 10));
+            }
             break;
         default:
             break;
@@ -358,18 +446,35 @@ void ModbusServer::setupWidgetContainers()
     coilButtons.setExclusive(false);
     discreteButtons.setExclusive(false);
 
+    // 正则表达式匹配找到相应对象
+
+    // 找到objectname前缀为coils_的QCheckBox对象，将其指针添加到QButtonGroup::coilButtons
     QRegularExpression regexp(QStringLiteral("coils_(?<ID>\\d+)"));
     const QList<QCheckBox *> coils = findChildren<QCheckBox *>(regexp);
     for (QCheckBox *cbx : coils)
         coilButtons.addButton(cbx, regexp.match(cbx->objectName()).captured("ID").toInt());
     connect(&coilButtons, SIGNAL(buttonClicked(int)), this, SLOT(coilChanged(int)));
 
+    // 找到objectname前缀为disc_的QCheckBox对象，将其指针添加到QButtonGroup::discreteButtons
     regexp.setPattern(QStringLiteral("disc_(?<ID>\\d+)"));
     const QList<QCheckBox *> discs = findChildren<QCheckBox *>(regexp);
     for (QCheckBox *cbx : discs)
         discreteButtons.addButton(cbx, regexp.match(cbx->objectName()).captured("ID").toInt());
     connect(&discreteButtons, SIGNAL(buttonClicked(int)), this, SLOT(discreteInputChanged(int)));
 
+    // 找到objectname前缀为label_IR_的QLabel对象，将其指针添加到QLabel列表IR_addressShow
+    regexp.setPattern(QStringLiteral("label_IR_(?<ID>\\d+)"));
+    const QList<QLabel *> ir_startAddress = findChildren<QLabel *>(regexp);
+    for (QLabel *ir_lbl : ir_startAddress)
+        IR_addressShow.push_back(ir_lbl);
+
+    // 找到objectname前缀为label_HR_的QLabel对象，将其指针添加到QLabel列表HR_addressShow
+    regexp.setPattern(QStringLiteral("label_HR_(?<ID>\\d+)"));
+    const QList<QLabel *> hr_startAddress = findChildren<QLabel *>(regexp);
+    for (QLabel *hr_lbl : hr_startAddress)
+        HR_addressShow.push_back(hr_lbl);
+
+    // // 找到objectname前缀为inReg_或holdReg_的QLineEdit对象，将其对象名及指针添加到哈希表registers
     regexp.setPattern(QLatin1String("(in|hold)Reg_(?<ID>\\d+)"));
     const QList<QLineEdit *> qle = findChildren<QLineEdit *>(regexp);
     for (QLineEdit *lineEdit : qle) {

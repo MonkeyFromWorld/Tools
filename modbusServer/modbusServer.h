@@ -51,6 +51,11 @@
 #ifndef MODBUS_SERVER_H
 #define MODBUS_SERVER_H
 
+#define NAVIGATION_PAGE 0
+#define MODBUS_CLIENT_PAGE 1
+#define MODBUS_SERVER_PAGE 2
+#define XLSX_DEAL_PAGE 3
+
 #define REGISTER_QUANTITY 0X2000
 #define MAX_REGISTER_ADDRESS (REGISTER_QUANTITY-1)
 
@@ -62,6 +67,7 @@ QT_BEGIN_NAMESPACE
 
 class QLineEdit;
 class QCheckBox;
+class QLabel;
 
 namespace Ui {
 class ModbusServer;
@@ -114,9 +120,9 @@ private:
 
     QButtonGroup coilButtons;
     QButtonGroup discreteButtons;
+    QList<QLabel* > IR_addressShow;
+    QList<QLabel* > HR_addressShow;
     QHash<QString, QLineEdit *> registers;
-
-    QHash<QString, QCheckBox *> coilCheckBox;
 
     ServerSettingsDialog *m_settingsDialog = nullptr;
 };
